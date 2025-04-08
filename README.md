@@ -42,11 +42,17 @@ The server will start using the stdio transport, which allows it to be used with
      "mcpServers": {
        "xmind-generator": {
          "command": "node",
-         "args": ["path/to/xmind-generator-mcp/dist/index.js"]
+         "args": ["path/to/xmind-generator-mcp/dist/index.js"],
+         "env": {
+           "outputPath": "/path/to/save/xmind/files"
+         }
        }
      }
    }
    ```
+
+   The `env` section is optional. It allows you to set environment variables for the server:
+   - `outputPath`: Default directory or file path where Xmind files will be saved. This can be overridden by the `outputPath` parameter in the tool call.
 4. Replace `path/to/xmind-generator-mcp` with the actual path to your project
 5. Start using the Xmind generator in your conversations
 
@@ -66,7 +72,7 @@ Parameters:
   - `markers` (array of strings, optional): Markers for the topic (format: "Category.name", e.g., "Arrow.refresh")
   - `children` (array, optional): Array of child topics
 - `relationships` (array, optional): Array of relationships between topics
-- `outputPath` (string, optional): Custom output path for the XMind file
+- `outputPath` (string, optional): Custom output path for the Xmind file. This overrides the environment variable if set.
 
 
 ## Example

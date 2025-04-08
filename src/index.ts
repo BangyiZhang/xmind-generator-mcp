@@ -94,7 +94,22 @@ server.tool(
       // Sanitize the filename to ensure it's valid for both Windows and Unix systems
       // Only filter out truly invalid characters: \ / : * ? " < > |
       const sanitizedFilename = params.filename.replace(/[\\/:*?"<>|]/g, '-');
-      const outputPath = params.outputPath || path.join(TEMP_DIR, `${sanitizedFilename}.xmind`);
+
+      // Get output path with priority:
+      // 1. Parameter provided in the tool call (params.outputPath)
+      // 2. Environment variable (process.env.outputPath)
+      // 3. Default temporary directory (TEMP_DIR)
+      const baseOutputPath = params.outputPath || process.env.outputPath || TEMP_DIR;
+
+      // If baseOutputPath is a directory, append the filename
+      // If it's a file path (has extension), use it directly
+      let outputPath: string;
+      if (baseOutputPath.endsWith('.xmind')) {
+        outputPath = baseOutputPath;
+      } else {
+        // Assume it's a directory path
+        outputPath = path.join(baseOutputPath, `${sanitizedFilename}.xmind`);
+      }
 
       // Ensure the output directory exists
       const outputDir = path.dirname(outputPath);
@@ -162,7 +177,7 @@ server.tool(
       // Open the generated file with default application
       const platform = process.platform;
       const openCommand = platform === 'win32' ? 'start' : platform === 'darwin' ? 'open' : 'xdg-open';
-      
+
       exec(`${openCommand} "${outputPath}"`, (error) => {
         if (error) {
           console.error('Error opening file:', error);
@@ -199,6 +214,10 @@ console.log('Starting XMind Generator MCP server...');
 console.log('Node version:', process.version);
 console.log('Working directory:', process.cwd());
 console.log('Temp directory:', TEMP_DIR);
+
+// Log environment configuration
+const envOutputPath = process.env.outputPath;
+console.log('Environment outputPath:', envOutputPath || 'Not set');
 
 // Check npm installation status
 try {
