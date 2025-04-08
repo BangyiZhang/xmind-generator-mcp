@@ -1,5 +1,7 @@
 # Xmind Generator MCP Server
 
+[![smithery badge](https://smithery.ai/badge/@BangyiZhang/xmind-generator-mcp-server)](https://smithery.ai/server/@BangyiZhang/xmind-generator-mcp-server)
+
 An MCP (Model Context Protocol) server for generating Xmind mind maps. This server allows LLMs to create structured mind maps through the MCP protocol.
 
 ## Features
@@ -9,6 +11,16 @@ An MCP (Model Context Protocol) server for generating Xmind mind maps. This serv
 - Save mind maps to local files
 
 ## Installation
+
+### Installing via Smithery
+
+To install Xmind Generator for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@BangyiZhang/xmind-generator-mcp-server):
+
+```bash
+npx -y @smithery/cli install @BangyiZhang/xmind-generator-mcp-server --client claude
+```
+
+### Manual Installation
 
 ```bash
 # Clone the repository
