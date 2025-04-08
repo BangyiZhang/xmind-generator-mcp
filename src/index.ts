@@ -174,15 +174,24 @@ server.tool(
 
       console.log('Mind map generated successfully at:', outputPath);
 
-      // Open the generated file with default application
-      const platform = process.platform;
-      const openCommand = platform === 'win32' ? 'start' : platform === 'darwin' ? 'open' : 'xdg-open';
+      // Check if we should automatically open the generated file
+      // Default to true if environment variable is not set
+      const autoOpenFile = process.env.autoOpenFile !== 'false';
 
-      exec(`${openCommand} "${outputPath}"`, (error) => {
-        if (error) {
-          console.error('Error opening file:', error);
-        }
-      });
+      if (autoOpenFile) {
+        // Open the generated file with default application
+        const platform = process.platform;
+        const openCommand = platform === 'win32' ? 'start' : platform === 'darwin' ? 'open' : 'xdg-open';
+
+        console.log('Auto-opening generated file...');
+        exec(`${openCommand} "${outputPath}"`, (error) => {
+          if (error) {
+            console.error('Error opening file:', error);
+          }
+        });
+      } else {
+        console.log('Auto-open disabled. File not opened automatically.');
+      }
 
       return {
         content: [{
@@ -217,7 +226,9 @@ console.log('Temp directory:', TEMP_DIR);
 
 // Log environment configuration
 const envOutputPath = process.env.outputPath;
+const envAutoOpenFile = process.env.autoOpenFile;
 console.log('Environment outputPath:', envOutputPath || 'Not set');
+console.log('Environment autoOpenFile:', envAutoOpenFile === 'false' ? 'false' : 'true (default)');
 
 // Check npm installation status
 try {
