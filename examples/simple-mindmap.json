@@ -1,0 +1,59 @@
+{
+  "title": "Project Plan",
+  "topics": [
+    {
+      "title": "Research",
+      "ref": "topic:research",
+      "note": "Gather information about the market",
+      "children": [
+        {
+          "title": "Market Analysis",
+          "labels": ["Priority: High"]
+        },
+        {
+          "title": "Competitor Research",
+          "markers": ["Task.quarter"]
+        }
+      ]
+    },
+    {
+      "title": "Development",
+      "children": [
+        {
+          "title": "Frontend",
+          "markers": ["Arrow.refresh"]
+        },
+        {
+          "title": "Backend"
+        }
+      ]
+    },
+    {
+      "title": "Testing",
+      "children": [
+        {
+          "title": "Unit Tests"
+        },
+        {
+          "title": "Integration Tests"
+        },
+        {
+          "title": "User Acceptance Testing",
+          "markers": ["Priority.high"]
+        }
+      ]
+    },
+    {
+      "title": "Deployment",
+      "children": [
+        {
+          "title": "Staging"
+        },
+        {
+          "title": "Production",
+          "markers": ["Flag.red"]
+        }
+      ]
+    }
+  ]
+}
