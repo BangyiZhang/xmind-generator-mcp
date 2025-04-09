@@ -4,8 +4,7 @@ import { z } from 'zod';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
-// We'll use execSync in the startup debug section
-import { execSync, exec } from 'child_process';
+import { exec } from 'child_process';
 import { createRequire } from 'module';
 
 // Create a require function for ES modules
@@ -17,7 +16,7 @@ try {
   // Try to require the package instead of using npm list
   require.resolve('xmind-generator');
   xmindGeneratorInstalled = true;
-  console.log('xmind-generator package found');
+  // xmind-generator package found
 } catch (error) {
   console.error('xmind-generator package not found in Node.js module resolution paths.');
   console.error('Current module paths:');
@@ -172,8 +171,6 @@ server.tool(
       // Write to file
       writeLocalFile(workbook, outputPath);
 
-      console.log('Mind map generated successfully at:', outputPath);
-
       // Check if we should automatically open the generated file
       // Default to true if environment variable is not set
       const autoOpenFile = process.env.autoOpenFile !== 'false';
@@ -183,14 +180,11 @@ server.tool(
         const platform = process.platform;
         const openCommand = platform === 'win32' ? 'start' : platform === 'darwin' ? 'open' : 'xdg-open';
 
-        console.log('Auto-opening generated file...');
         exec(`${openCommand} "${outputPath}"`, (error) => {
           if (error) {
             console.error('Error opening file:', error);
           }
         });
-      } else {
-        console.log('Auto-open disabled. File not opened automatically.');
       }
 
       return {
@@ -218,61 +212,13 @@ server.tool(
 // Create a transport using standard IO for server communication
 const transport = new StdioServerTransport();
 
-// Add startup debug information
-console.log('Starting XMind Generator MCP server...');
-console.log('Node version:', process.version);
-console.log('Working directory:', process.cwd());
-console.log('Temp directory:', TEMP_DIR);
-
-// Log environment configuration
+// Get environment configuration
 const envOutputPath = process.env.outputPath;
 const envAutoOpenFile = process.env.autoOpenFile;
-console.log('Environment outputPath:', envOutputPath || 'Not set');
-console.log('Environment autoOpenFile:', envAutoOpenFile === 'false' ? 'false' : 'true (default)');
-
-// Check npm installation status
-try {
-  const npmVersion = execSync('npm --version').toString().trim();
-  console.log('npm version:', npmVersion);
-
-  // List installed packages
-  console.log('Checking installed packages:');
-  try {
-    const xmindGeneratorInfo = execSync('npm list xmind-generator').toString().trim();
-    console.log(xmindGeneratorInfo);
-  } catch (e) {
-    console.log('xmind-generator not found in local packages');
-  }
-
-  try {
-    const jszipInfo = execSync('npm list jszip').toString().trim();
-    console.log(jszipInfo);
-  } catch (e) {
-    console.log('jszip not found in local packages');
-  }
-} catch (error) {
-  console.error('Error checking npm:', error);
-}
-
-try {
-  // Test xmind-generator and jszip availability
-  require('xmind-generator');
-  console.log('xmind-generator loaded successfully');
-
-  require('jszip');
-  console.log('jszip loaded successfully');
-} catch (error) {
-  console.error('Error loading dependencies:', error);
-  // Don't exit immediately to allow the error to be reported back to the client
-  // process.exit(1);
-}
 
 // Connect the server to the transport
 server.connect(transport).then(() => {
-  console.log('XMind Generator MCP server running');
-  console.log(`Temporary files will be stored in: ${TEMP_DIR}`);
-  console.log('Available tools:');
-  console.log('- generate-mind-map: Generate XMind mind maps');
+  // Server started successfully
 }).catch((error: Error) => {
   console.error('Failed to start server:', error);
   process.exit(1);
