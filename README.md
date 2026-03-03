@@ -5,8 +5,9 @@ An MCP (Model Context Protocol) server for generating Xmind mind maps. This serv
 ## Features
 
 - Generate Xmind mind maps with hierarchical topic structures
-- Support for topic notes, labels, and markers
+- Support for topic notes, labels, markers, and relationships
 - Save mind maps to local files
+- **Read existing .xmind files and export an outline as Markdown**
 - Easy integration with Claude Desktop and other MCP clients
 
 ## Prerequisites
@@ -97,6 +98,22 @@ Parameters:
   - `children` (array, optional): Array of child topics
 - `relationships` (array, optional): Array of relationships between topics
 - `outputPath` (string, optional): Custom output path for the Xmind file. This overrides the environment variable if set.
+
+### read-mind-map
+
+Reads an existing `.xmind` file and exports it as a Markdown outline.
+
+Parameters:
+- `inputPath` (string): Path to the `.xmind` file
+- `style` (string, optional): Markdown style. Currently supports `A` (outline). (`B` reserved for future richer exports.)
+
+Example:
+```json
+{
+  "inputPath": "/path/to/file.xmind",
+  "style": "A"
+}
+```
 
 
 ## Example
