@@ -8,6 +8,7 @@ import * as path from 'path';
 import * as os from 'os';
 import { exec } from 'child_process';
 import { createRequire } from 'module';
+import { readXmindToTree, treeToMarkdown } from './read.js';
 
 // Create a require function for ES modules
 const require = createRequire(import.meta.url);
@@ -59,8 +60,14 @@ const GenerateMindMapSchema = z.object({
   relationships: z.array(RelationshipSchema).optional().describe('Optional array of relationships between topics')
 });
 
+const ReadMindMapSchema = z.object({
+  inputPath: z.string().describe('Path to the .xmind file to read'),
+  style: z.enum(['A', 'B']).optional().describe('Markdown export style. A=outline titles only; B=include more details if available (future). Default A.')
+});
+
 type TopicData = z.infer<typeof TopicSchema>;
 type GenerateMindMapParams = z.infer<typeof GenerateMindMapSchema>;
+type ReadMindMapParams = z.infer<typeof ReadMindMapSchema>;
 
 
 
@@ -208,6 +215,28 @@ server.tool(
   }
 );
 
+
+// Register the read-mind-map tool (Markdown export)
+server.tool(
+  'read-mind-map',
+  ReadMindMapSchema.shape,
+  async (params: ReadMindMapParams) => {
+    try {
+      const tree = await readXmindToTree(params.inputPath);
+      // Currently style A only (outline). Style B can be added later when we preserve notes/labels.
+      const md = treeToMarkdown(tree);
+      return { content: [{ type: 'text', text: md }] };
+    } catch (error) {
+      return {
+        content: [{
+          type: 'text',
+          text: `Error reading mind map: ${error instanceof Error ? error.message : String(error)}`
+        }],
+        isError: true
+      };
+    }
+  }
+);
 
 
 
