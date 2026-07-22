@@ -62,7 +62,8 @@ const GenerateMindMapSchema = z.object({
 
 const ReadMindMapSchema = z.object({
   inputPath: z.string().describe('Path to the .xmind file to read'),
-  style: z.enum(['A', 'B']).optional().describe('Markdown export style. A=outline titles only; B=include more details if available (future). Default A.')
+  style: z.enum(['A', 'B']).optional().describe('Markdown export style. A=outline titles only; B=include more details if available (future). Default A.'),
+  sheetIndex: z.number().int().min(0).optional().describe('Zero-based sheet/canvas index for .xmind files with multiple sheets. Default 0 (first sheet).')
 });
 
 type TopicData = z.infer<typeof TopicSchema>;
@@ -222,10 +223,14 @@ server.tool(
   ReadMindMapSchema.shape,
   async (params: ReadMindMapParams) => {
     try {
-      const tree = await readXmindToTree(params.inputPath);
+      const sheetIndex = params.sheetIndex ?? 0;
+      const tree = await readXmindToTree(params.inputPath, sheetIndex);
       // Currently style A only (outline). Style B can be added later when we preserve notes/labels.
       const md = treeToMarkdown(tree);
-      return { content: [{ type: 'text', text: md }] };
+      const header = tree.totalSheets > 1
+        ? `[Sheet ${tree.currentSheet + 1}/${tree.totalSheets}] `
+        : '';
+      return { content: [{ type: 'text', text: header + md }] };
     } catch (error) {
       return {
         content: [{

@@ -19,7 +19,7 @@ function topicFromXmind(node: any): TopicData {
   return t;
 }
 
-export async function readXmindToTree(inputXmindPath: string): Promise<{ title: string; topics: TopicData[] }> {
+export async function readXmindToTree(inputXmindPath: string, sheetIndex: number = 0): Promise<{ title: string; topics: TopicData[]; totalSheets: number; currentSheet: number }> {
   const buf = fs.readFileSync(inputXmindPath);
   const zip = await JSZip.loadAsync(buf);
 
@@ -30,7 +30,10 @@ export async function readXmindToTree(inputXmindPath: string): Promise<{ title: 
   const doc = JSON.parse(contentJson);
   if (!Array.isArray(doc) || !doc.length) throw new Error('Invalid content.json: expected array of sheets');
 
-  const sheet = doc[0];
+  const totalSheets = doc.length;
+  if (sheetIndex < 0 || sheetIndex >= totalSheets)
+    throw new Error(`sheetIndex ${sheetIndex} out of range (0-${totalSheets - 1})`);
+  const sheet = doc[sheetIndex];
   const root = sheet?.rootTopic;
   if (!root?.title) throw new Error('Invalid content.json: missing rootTopic.title');
 
@@ -38,7 +41,7 @@ export async function readXmindToTree(inputXmindPath: string): Promise<{ title: 
     ? root.children.attached.map(topicFromXmind)
     : [];
 
-  return { title: String(root.title), topics };
+  return { title: String(root.title), topics, totalSheets, currentSheet: sheetIndex };
 }
 
 export function treeToMarkdown(tree: { title: string; topics: TopicData[] }): string {
