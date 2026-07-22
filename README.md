@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/bangyizhang-xmind-generator-mcp-badge.png)](https://mseep.ai/app/bangyizhang-xmind-generator-mcp)
+
 # Xmind Generator MCP Server
 
 An MCP (Model Context Protocol) server for generating Xmind mind maps. This server allows LLMs to create structured mind maps through the MCP protocol.
