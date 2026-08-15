@@ -1,3 +1,5 @@
+
+
 # Xmind Generator MCP Server
 
 An MCP (Model Context Protocol) server for generating Xmind mind maps. This server allows LLMs to create structured mind maps through the MCP protocol.
@@ -96,6 +98,7 @@ Parameters:
   - `labels` (array of strings, optional): Labels for the topic
   - `markers` (array of strings, optional): Markers for the topic (format: "Category.name", e.g., "Arrow.refresh")
   - `children` (array, optional): Array of child topics
+- `filename` (string): The filename for the Xmind file (without path or extension)
 - `relationships` (array, optional): Array of relationships between topics
 - `outputPath` (string, optional): Custom output path for the Xmind file. This overrides the environment variable if set.
 
